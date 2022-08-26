@@ -44,24 +44,24 @@ func Painc(msg string, fields ...zap.Field) {
 }
 
 // 自定义格式化输出
-func Infof(msg string, fields ...zap.Field) {
-	logg.Info(msg, fields...)
+func Infof(msg string, data ...interface{}) {
+	logg.Sugar().Infof(msg, data...)
 }
 
-func Debugf(msg string, fields ...zap.Field) {
-	logg.Debug(msg, fields...)
+func Debugf(msg string, data ...interface{}) {
+	logg.Sugar().Debugf(msg, data...)
 }
 
-func Errorf(msg string, fields ...zap.Field) {
-	logg.Error(msg, fields...)
+func Errorf(msg string, data ...interface{}) {
+	logg.Sugar().Errorf(msg, data...)
 }
 
-func Fatalf(msg string, fields ...zap.Field) {
-	logg.Fatal(msg, fields...)
+func Fatalf(msg string, data ...interface{}) {
+	logg.Sugar().Fatalf(msg, data...)
 }
 
-func Paincf(msg string, fields ...zap.Field) {
-	logg.Panic(msg, fields...)
+func Paincf(msg string, data ...interface{}) {
+	logg.Sugar().Panicf(msg, data...)
 }
 
 func FromContext(ctx context.Context) *zap.Logger {
