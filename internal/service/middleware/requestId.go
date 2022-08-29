@@ -10,6 +10,10 @@ func RequestId() gin.HandlerFunc {
 		requestId := uuid.NewV4().String()
 		c.Set("request_id", requestId)
 		c.Writer.Header().Set("request_id", requestId)
+
+		// ctxLog := log.WithValues("request_id", requestId)
+		// c.Set(log.GetContextKey(), ctxLog)
+
 		c.Next()
 	}
 }

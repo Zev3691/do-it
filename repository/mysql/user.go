@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"re_new/util/log"
 )
 
 type User struct {
@@ -26,6 +27,8 @@ func (u *User) Create(ctx context.Context) error {
 }
 
 func (u *User) LoginMath(ctx context.Context) error {
+	request_id := ctx.Value("request_id")
+	log.Debugf("request_idrequest_idrequest_idrequest_id %v", request_id)
 	db := NewMysqlDB(ctx)
 	db = db.Model(u).Where("name = ? AND password = ?", u.Name, u.Password)
 	return db.First(u).Error

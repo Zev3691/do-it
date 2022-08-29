@@ -57,24 +57,24 @@ func (l *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (stri
 		case err != nil && l.LogLevel >= logger.Error:
 			sql, rows := fc()
 			if rows == -1 {
-				FromContext(ctx).Sugar().Error("[err: %s, cost: %f, rows: %s, sql: %s]", err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+				FromContext(ctx).Sugar().Errorf("[err: %s, cost: %f, rows: %s, sql: %s]", err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
 			} else {
-				FromContext(ctx).Sugar().Error("[err: %s, cost: %f, rows: %d, sql: %s]", err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+				FromContext(ctx).Sugar().Errorf("[err: %s, cost: %f, rows: %d, sql: %s]", err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 			}
 		case elapsed > l.SlowThreshold && l.SlowThreshold != 0 && l.LogLevel >= logger.Warn:
 			sql, rows := fc()
 			slowLog := fmt.Sprintf("SLOW SQL >= %v", l.SlowThreshold)
 			if rows == -1 {
-				FromContext(ctx).Sugar().Warn("[slowLog: %s, cost: %f, rows: %s, sql: %s]", slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+				FromContext(ctx).Sugar().Warnf("[slowLog: %s, cost: %f, rows: %s, sql: %s]", slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
 			} else {
-				FromContext(ctx).Sugar().Warn("[slowLog: %s, cost: %f, rows: %d, sql: %s]", slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+				FromContext(ctx).Sugar().Warnf("[slowLog: %s, cost: %f, rows: %d, sql: %s]", slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 			}
 		case l.LogLevel >= logger.Info:
 			sql, rows := fc()
 			if rows == -1 {
-				FromContext(ctx).Sugar().Info("[cost: %f, rows: %s, sql: %s]", float64(elapsed.Nanoseconds())/1e6, "-", sql)
+				FromContext(ctx).Sugar().Infof("[cost: %f, rows: %s, sql: %s]", float64(elapsed.Nanoseconds())/1e6, "-", sql)
 			} else {
-				FromContext(ctx).Sugar().Info("[cost: %f, rows: %d, sql: %s]", float64(elapsed.Nanoseconds())/1e6, rows, sql)
+				FromContext(ctx).Sugar().Infof("[cost: %f, rows: %d, sql: %s]", float64(elapsed.Nanoseconds())/1e6, rows, sql)
 			}
 		}
 	}

@@ -27,8 +27,5 @@ func initMysql() *gorm.DB {
 }
 
 func NewMysqlDB(ctx context.Context) *gorm.DB {
-	// TODO 从ctx中获取logger实例并赋值给session中的logger
-	return db.Session(&gorm.Session{
-		Context: ctx,
-	})
+	return db.WithContext(ctx)
 }

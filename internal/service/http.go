@@ -12,7 +12,7 @@ var engin *gin.Engine
 
 func HTTP() {
 	engin = gin.Default()
-	engin.Use(middleware.Cors())
+	engin.Use(middleware.Cors(), middleware.RequestId())
 
 	auth.Registry()(engin)
 	user.Registry(middleware.Auth())(engin)

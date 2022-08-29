@@ -31,6 +31,8 @@ const (
 	ErrJsonParse        ErrCode = 400015
 	ErrStackOverflow    ErrCode = 400016
 	ErrAccessFailed     ErrCode = 400017
+
+	ErrDBOptFailed ErrCode = 400051
 )
 
 func init() {
@@ -67,6 +69,6 @@ func init() {
 	baseErrors[400041] = BaseErrMsg{ErrMsg: "无法识别的环境变量: %s=%s", ErrMsgEn: "undefined environment variables"}
 
 	baseErrors[400050] = BaseErrMsg{ErrMsg: "数据层类型错误: %s", ErrMsgEn: "failed when transform type on orm"}
-	baseErrors[400051] = BaseErrMsg{ErrMsg: "数据库操作失败: %s", ErrMsgEn: "db op error"}
+	baseErrors[ErrDBOptFailed] = BaseErrMsg{ErrMsg: "数据库操作失败: %s", ErrMsgEn: "db op error"}
 	baseErrors[400052] = BaseErrMsg{ErrMsg: "无法获取数据库连接: %s", ErrMsgEn: "Failed to get db-connection"}
 }

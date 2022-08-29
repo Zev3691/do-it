@@ -1,9 +1,8 @@
 package auth
 
 import (
-	"net/http"
+	"re_new/internal/server"
 	"re_new/repository/mysql"
-	"re_new/util"
 	"re_new/util/conf"
 	"re_new/util/errorsx"
 	"strconv"
@@ -15,29 +14,30 @@ import (
 )
 
 type LoginRequest struct {
-	Username     string
-	Userpassword string
+	Name     string `json:"user_name"`
+	Password string `json:"password"`
 }
 
 func Login(c *gin.Context) {
 	var req LoginRequest
-	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusOK, util.Response(errorsx.ErrJsonParse))
+	if err := c.ShouldBindJSON(&req); err != nil {
+		server.Response(c, errorsx.ErrJsonParse, err.Error())
 		return
 	}
-
 	// 获取用户
 	user := &mysql.User{}
+	user.Name = req.Name
+	user.Password = req.Password
 	err := user.LoginMath(c)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			c.JSON(http.StatusOK, util.Response(errorsx.ErrAccessFailed, errorsx.NewCustomErrMsg("用户不存在", "")))
+			server.Response(c, errorsx.ErrAccessFailed, "用户不存在")
 		} else {
-			c.JSON(http.StatusOK, util.Response(errorsx.ErrAccessFailed, errorsx.NewCustomErrMsg(err.Error(), "")))
+			server.Response(c, errorsx.ErrAccessFailed, err.Error())
 		}
 		return
 	}
-	if req.Userpassword == user.Password {
+	if req.Password == user.Password {
 		expiresTime := time.Now().Unix() + int64(conf.GetInt("oneDayOfHours"))
 		claims := jwt.StandardClaims{
 			Audience:  user.Name,             // 受众
@@ -51,14 +51,14 @@ func Login(c *gin.Context) {
 		var jwtSecret = []byte(conf.GetString("secret"))
 		tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		if token, err := tokenClaims.SignedString(jwtSecret); err == nil {
-			c.JSON(http.StatusOK, util.Success("登录成功", "Bearer "+token))
+			server.Success(c, "登录成功", "Bearer "+token)
 			return
 		} else {
-			c.JSON(http.StatusOK, util.Response(errorsx.ErrAccessFailed, errorsx.NewCustomErrMsg(err.Error(), "")))
+			server.Response(c, errorsx.ErrAccessFailed, err.Error())
 			return
 		}
 	} else {
-		c.JSON(http.StatusOK, util.Response(errorsx.ErrAccessFailed, errorsx.NewCustomErrMsg("登录失败", "")))
+		server.Response(c, errorsx.ErrAccessFailed, "登录失败")
 		return
 	}
 }
