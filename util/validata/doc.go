@@ -1,6 +1,7 @@
 package validata
 
-// https://segmentfault.com/a/1190000040445612
+// https://darjun.github.io/2020/04/04/godailylib/validator/
+// https://github.com/go-playground/validator
 
 // len：length 等于，长度相等
 // max：小于等于

@@ -1,4 +1,4 @@
-package errorsx
+package errorx
 
 type BaseErrMsg struct {
 	ErrMsg   string `json:"err_msg,omitempty"`

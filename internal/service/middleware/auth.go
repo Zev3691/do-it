@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"re_new/util"
 	"re_new/util/conf"
-	"re_new/util/errorsx"
+	"re_new/util/errorx"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -23,7 +23,7 @@ func Auth() gin.HandlerFunc {
 		auth := c.Request.Header.Get("Authorization")
 		if len(auth) == 0 {
 			c.Abort()
-			c.JSON(http.StatusOK, util.Response(errorsx.ErrAccessFailed, errorsx.NewCustomErrMsg("无法认证，重新登录", "")))
+			c.JSON(http.StatusOK, util.Response(errorx.ErrAccessFailed, errorx.NewCustomErrMsg("无法认证，重新登录", "")))
 		}
 		auth = strings.Fields(auth)[1]
 		// 校验token
@@ -31,7 +31,7 @@ func Auth() gin.HandlerFunc {
 		if err != nil {
 			c.Abort()
 			message := "token 过期" + err.Error()
-			c.JSON(http.StatusOK, util.Response(errorsx.ErrPermissionDeny, errorsx.NewCustomErrMsg(message, "")))
+			c.JSON(http.StatusOK, util.Response(errorx.ErrPermissionDeny, errorx.NewCustomErrMsg(message, "")))
 		} else {
 			println("token 正确")
 		}

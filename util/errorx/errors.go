@@ -1,4 +1,4 @@
-package errorsx
+package errorx
 
 import (
 	"encoding/json"
@@ -24,6 +24,12 @@ func NewCustomErrMsg(zhErr, enErr string) CustomErrMsg {
 	return CustomErrMsg{
 		ErrMsg:   zhErr,
 		ErrMsgEn: enErr,
+	}
+}
+
+func NewMsg(err string) CustomErrMsg {
+	return CustomErrMsg{
+		ErrMsg: err,
 	}
 }
 

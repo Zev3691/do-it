@@ -1,6 +1,6 @@
 package util
 
-import "re_new/util/errorsx"
+import "re_new/util/errorx"
 
 var Nil = struct{}{}
 
@@ -15,7 +15,7 @@ func Success(msg string, data interface{}) *response {
 		msg = "success"
 	}
 	return &response{
-		Code: int(errorsx.ErrSuccess),
+		Code: int(errorx.ErrSuccess),
 		Msg:  msg,
 		Data: data,
 	}
@@ -29,8 +29,8 @@ func SuccessNIL() *response {
 	}
 }
 
-func Response(errCode errorsx.ErrCode, msg ...errorsx.CustomErrMsg) *response {
-	errx := errorsx.New(errCode, msg...)
+func Response(errCode errorx.ErrCode, msg ...errorx.CustomErrMsg) *response {
+	errx := errorx.New(errCode, msg...)
 	return &response{
 		Code: int(errx.ErrCode),
 		Msg:  errx.ErrMsg,
