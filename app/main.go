@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"re_new/internal/service"
 	"re_new/repository"
 	"re_new/util"
@@ -29,6 +30,6 @@ func debugPrint() {
 	// test和dev环境执行的逻辑
 	switch util.GetVersion() {
 	case util.Test, util.Development:
-		log.Info("配置文件加载key: %v", zap.Any("viper,key: ", conf.GetAllKey()))
+		log.Info(context.Background(), "配置文件加载key: %v", zap.Any("viper,key: ", conf.GetAllKey()))
 	}
 }

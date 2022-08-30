@@ -3,12 +3,15 @@ package auth
 import (
 	"context"
 	"re_new/repository/mysql"
+	"re_new/util/auth"
 	"re_new/util/conf"
 	"re_new/util/errorx"
+	"re_new/util/log"
 	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -29,6 +32,7 @@ func New(db *gorm.DB) *Biz {
 
 func (srv *Biz) Login(ctx context.Context, req *LoginRequest) (string, error) {
 	// 获取用户
+	log.Debug(ctx, "req ", zap.Any("req ", req))
 	user := &mysql.User{}
 	user.Name = req.Name
 	user.Password = req.Password
@@ -42,16 +46,8 @@ func (srv *Biz) Login(ctx context.Context, req *LoginRequest) (string, error) {
 	}
 	if req.Password == user.Password {
 		expiresTime := time.Now().Unix() + int64(conf.GetInt("oneDayOfHours"))
-		claims := jwt.StandardClaims{
-			Audience:  user.Name,             // 受众
-			ExpiresAt: expiresTime,           // 失效时间
-			Id:        strconv.Itoa(user.ID), // 编号
-			IssuedAt:  time.Now().Unix(),     // 签发时间
-			Issuer:    "gin hello",           // 签发人
-			NotBefore: time.Now().Unix(),     // 生效时间
-			Subject:   "login",               // 主题
-		}
-		var jwtSecret = []byte(conf.GetString("secret"))
+		claims := auth.NewClaims(user.Name, expiresTime, strconv.Itoa(user.ID), "re_new", "login")
+		jwtSecret := []byte(auth.GetSecret())
 		tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		if token, err := tokenClaims.SignedString(jwtSecret); err == nil {
 			// success return
@@ -60,6 +56,6 @@ func (srv *Biz) Login(ctx context.Context, req *LoginRequest) (string, error) {
 			return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg(err.Error()))
 		}
 	} else {
-		return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg("登录失败"))
+		return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg("登录失败, 检查密码"))
 	}
 }

@@ -1,37 +1,17 @@
 package cryptox
 
-import (
-	"crypto/sha1"
-	"fmt"
-	"sort"
-	"strconv"
-	"strings"
-	"time"
-)
+import "math/rand"
 
-func Token(name, password, salt string) string {
-	tims := strconv.Itoa(int(time.Now().Unix()))
-	str := name + password + salt + tims
-	strSlc := strings.Split(str, "")
-	sort.Strings(strSlc)
-	str = strings.Join(strSlc, "")
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-	h := sha1.New()
-	h.Write([]byte(str))
-	tokenByte := h.Sum(nil)
-
-	return fmt.Sprintf("%x", tokenByte)
+func RandStringBytesRmndr(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
 }
 
-func UserName(userId int, userName string) string {
-	str := strconv.Itoa(userId) + userName
-	strSlc := strings.Split(str, "")
-	sort.Strings(strSlc)
-	str = strings.Join(strSlc, "")
-
-	h := sha1.New()
-	h.Write([]byte(str))
-	cryptoUserName := h.Sum(nil)
-
-	return fmt.Sprintf("%x", cryptoUserName)
+func GenSalt(length int) string {
+	return RandStringBytesRmndr(length)
 }

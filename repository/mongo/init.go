@@ -29,7 +29,7 @@ func initMongo() *mongo.Client {
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
-	log.Info("Successfully connected and pinged.")
+	log.Info(context.Background(), "Successfully connected and pinged.")
 
 	return client
 }

@@ -9,7 +9,8 @@ func Registry(middlewares ...gin.HandlerFunc) func(engin *gin.Engine) {
 		user := engin.Group("/users")
 		user.Use(middlewares...)
 
-		user.GET("/test", Test)
 		user.POST("/create", Create)
+		user.POST("/update", Update)
+		user.POST("/list", List)
 	}
 }
