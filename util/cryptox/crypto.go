@@ -1,6 +1,9 @@
 package cryptox
 
-import "math/rand"
+import (
+	"encoding/base64"
+	"math/rand"
+)
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -14,4 +17,8 @@ func RandStringBytesRmndr(n int) string {
 
 func GenSalt(length int) string {
 	return RandStringBytesRmndr(length)
+}
+
+func Base64(str string) string {
+	return base64.StdEncoding.EncodeToString([]byte(str))
 }

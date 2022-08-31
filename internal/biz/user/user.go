@@ -104,3 +104,46 @@ func List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
 
 	return ret, nil
 }
+
+type DeleteRequset struct {
+	Id int `json:"id" validata:"require"`
+}
+
+func Delete(ctx context.Context, req *DeleteRequset) error {
+	model := mysql.User{ID: req.Id}
+	if err := model.Delete(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type GetRequest struct {
+	Id int `json:"id" validata:"require"`
+}
+
+func Get(ctx context.Context, req *GetRequest) (*ListItem, error) {
+	user, err := mysql.FindUserById(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	ret := &ListItem{
+		ID:             user.ID,
+		Name:           user.Name,
+		EmployeeNumber: user.EmployeeNumber,
+		Persona:        user.Persona,
+		Enable:         user.Enable,
+		Password:       "********",
+		Phone:          user.Phone,
+	}
+	return ret, nil
+}
+
+func GetUserPwd(ctx context.Context, req *GetRequest) (string, error) {
+	user, err := mysql.FindUserById(ctx, req.Id)
+	if err != nil {
+		return "", err
+	}
+
+	return cryptox.Base64(user.Password), nil
+}

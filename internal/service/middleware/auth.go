@@ -39,7 +39,7 @@ func Auth() gin.HandlerFunc {
 				return
 			}
 			uid, _ := strconv.Atoi(claim.Id)
-			u, err := mysql.FindById(c, uid)
+			u, err := mysql.FindUserById(c, uid)
 			if err != nil {
 				log.Error(c, err.Error())
 				c.Abort()

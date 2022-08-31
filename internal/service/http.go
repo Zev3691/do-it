@@ -4,6 +4,7 @@ import (
 	"re_new/internal/server/auth"
 	"re_new/internal/server/user"
 	"re_new/internal/service/middleware"
+	"re_new/util/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,8 +12,9 @@ import (
 var engin *gin.Engine
 
 func HTTP() {
-	engin = gin.Default()
-	engin.Use(middleware.Cors(), middleware.RequestId())
+	engin = gin.New()
+	engin.Use(middleware.RequestId(), middleware.Cors())
+	engin.Use(middleware.Data(), middleware.Log(), middleware.Recovery(log.GetOriginLog(), true))
 
 	auth.Registry()(engin)
 	user.Registry(middleware.Auth())(engin)

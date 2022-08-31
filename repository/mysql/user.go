@@ -73,11 +73,19 @@ func (u *User) List(ctx context.Context, limit, offset int, scopes ...func(*gorm
 	return ret, count, nil
 }
 
-func FindById(ctx context.Context, id int) (*User, error) {
+func FindUserById(ctx context.Context, id int) (*User, error) {
 	db := NewMysqlDB(ctx)
 	u := &User{ID: id}
-	if err := db.Model(u).Error; err != nil {
+	if err := db.Model(u).First(u).Error; err != nil {
 		return nil, err
 	}
 	return u, nil
+}
+
+func (u *User) Delete(ctx context.Context) error {
+	db := NewMysqlDB(ctx)
+	if err := db.Model(u).Delete(u).Error; err != nil {
+		return err
+	}
+	return nil
 }

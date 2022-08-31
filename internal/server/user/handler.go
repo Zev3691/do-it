@@ -48,3 +48,48 @@ func List(c *gin.Context) {
 
 	server.Success(c, "", item)
 }
+
+func Delete(c *gin.Context) {
+	var req user.DeleteRequset
+	if err := c.ShouldBindJSON(&req); err != nil {
+		server.CustomResponse(c, errorx.ErrJsonParse, err.Error())
+		return
+	}
+
+	if err := user.Delete(c, &req); err != nil {
+		server.Response(c, err)
+		return
+	}
+
+	server.SuccessNIL(c)
+}
+
+func Get(c *gin.Context) {
+	var req user.GetRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		server.CustomResponse(c, errorx.ErrJsonParse, err.Error())
+		return
+	}
+
+	data, err := user.Get(c, &req)
+	if err != nil {
+		server.Response(c, err)
+		return
+	}
+
+	server.Success(c, "", data)
+}
+
+func GetUserPwd(c *gin.Context) {
+	var req user.GetRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		server.CustomResponse(c, errorx.ErrJsonParse, err.Error())
+		return
+	}
+	pwd, err := user.GetUserPwd(c, &req)
+	if err != nil {
+		server.Response(c, err)
+		return
+	}
+	server.Success(c, "", pwd)
+}

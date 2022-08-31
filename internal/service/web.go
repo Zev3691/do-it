@@ -1,9 +1,10 @@
 package service
 
 import (
-	"fmt"
+	"context"
 	"os"
 	"os/signal"
+	"re_new/repository/mongo"
 	"syscall"
 )
 
@@ -19,7 +20,10 @@ func do() chan struct{} {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigs
-		fmt.Println("dddddddddd")
+		defer func() {
+			// 关闭mongo链接
+			mongo.NewMongoDB().Disconnect(context.TODO())
+		}()
 		done <- struct{}{}
 	}()
 	return done

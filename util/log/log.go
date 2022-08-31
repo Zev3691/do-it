@@ -23,6 +23,10 @@ func Init() {
 	}
 }
 
+func GetOriginLog() *zap.Logger {
+	return logg
+}
+
 func Info(ctx context.Context, msg string, fields ...zap.Field) {
 	log := FromContext(ctx)
 	log.Info(msg, fields...)
