@@ -26,5 +26,6 @@ func initRedis() *redis.Client {
 	if cmd := db.Ping(context.Background()); cmd.Err() != nil {
 		panic(fmt.Sprintf("redis init fail, err: %v", cmd.Err()))
 	}
+	println("[redis] Successfully connected and pinged.")
 	return db
 }

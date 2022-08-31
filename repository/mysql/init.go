@@ -23,6 +23,7 @@ func initMysql() *gorm.DB {
 	if err != nil {
 		panic(fmt.Sprintf("初始化数据库失败： %v", err))
 	}
+	println("[mysql] Successfully connected.")
 	return db
 }
 
