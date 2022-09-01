@@ -16,7 +16,7 @@ func Data() gin.HandlerFunc {
 			fmt.Println(err.Error())
 		}
 
-		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data)) // 关键点
+		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = blw

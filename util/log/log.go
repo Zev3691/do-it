@@ -12,13 +12,13 @@ var logg *zap.Logger
 func Init() {
 	switch util.GetVersion() {
 	case util.Production:
-		logg, _ = zap.NewProduction()
+		logg, _ = zap.NewProduction(zap.AddCallerSkip(1))
 		logg.Info(util.Production)
 	case util.Development:
-		logg, _ = zap.NewDevelopment()
+		logg, _ = zap.NewDevelopment(zap.AddCallerSkip(1))
 		logg.Info(util.Development)
 	default:
-		logg = zap.NewExample()
+		logg = zap.NewExample(zap.AddCallerSkip(1))
 		logg.Info(util.Test)
 	}
 }

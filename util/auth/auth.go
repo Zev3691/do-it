@@ -1,6 +1,10 @@
 package auth
 
 import (
+	"context"
+	"re_new/repository/redis"
+	"re_new/util/conf"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,14 +16,37 @@ func GetSecret() string {
 	return defaultSecret
 }
 
-func NewClaims(audience string, exp int64, id, issuer, subject string) *jwt.StandardClaims {
-	return &jwt.StandardClaims{
+func NewToken(ctx context.Context, audience string, exp int64, id int, issuer, subject string) (string, error) {
+	expr := exp
+	if expr == 0 {
+		expr = time.Now().Unix() + int64(conf.GetInt("oneDayOfHours"))
+	}
+	claims := &jwt.StandardClaims{
 		Audience:  audience,          // 受众
-		ExpiresAt: exp,               // 失效时间
-		Id:        id,                // 编号
+		ExpiresAt: expr,              // 失效时间
+		Id:        strconv.Itoa(id),  // 编号
 		IssuedAt:  time.Now().Unix(), // 签发时间
 		Issuer:    issuer,            // 签发人
 		NotBefore: time.Now().Unix(), // 生效时间
 		Subject:   subject,           // 主题
 	}
+
+	jwtSecret := []byte(GetSecret())
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	t, err := tokenClaims.SignedString(jwtSecret)
+	if err == nil {
+		token := "Bearer " + t
+		return token, nil
+	}
+	return "", err
+}
+
+func SetToRedis(ctx context.Context, token, userName string, userId int) error {
+	value := redis.Auth{
+		Token:    token,
+		UserName: userName,
+		UserId:   userId,
+	}
+	return value.SetAuthToken(ctx, token)
 }

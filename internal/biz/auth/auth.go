@@ -4,13 +4,9 @@ import (
 	"context"
 	"re_new/repository/mysql"
 	"re_new/util/auth"
-	"re_new/util/conf"
 	"re_new/util/errorx"
 	"re_new/util/log"
-	"strconv"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -45,16 +41,14 @@ func (srv *Biz) Login(ctx context.Context, req *LoginRequest) (string, error) {
 		}
 	}
 	if req.Password == user.Password {
-		expiresTime := time.Now().Unix() + int64(conf.GetInt("oneDayOfHours"))
-		claims := auth.NewClaims(user.Name, expiresTime, strconv.Itoa(user.ID), "re_new", "login")
-		jwtSecret := []byte(auth.GetSecret())
-		tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		if token, err := tokenClaims.SignedString(jwtSecret); err == nil {
-			// success return
-			return "Bearer " + token, nil
-		} else {
+		token, err := auth.NewToken(ctx, user.Name, 0, user.ID, "re_new", "login")
+		if err != nil {
 			return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg(err.Error()))
 		}
+		if err := auth.SetToRedis(ctx, token, user.Name, user.ID); err != nil {
+			return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg(err.Error()))
+		}
+		return token, nil
 	} else {
 		return "", errorx.New(errorx.ErrAccessFailed, errorx.NewMsg("登录失败, 检查密码"))
 	}

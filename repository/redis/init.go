@@ -29,3 +29,7 @@ func initRedis() *redis.Client {
 	println("[redis] Successfully connected and pinged.")
 	return db
 }
+
+func GetRedisDB() *redis.Client {
+	return redisDb
+}
